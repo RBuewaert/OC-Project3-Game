@@ -1,6 +1,6 @@
 //
-//  Mage.swift
-//  ProjetP3
+//  BloodMage.swift
+//  ProjectP3
 //
 //  Created by Romain Buewaert on 31/03/2021.
 //
@@ -8,61 +8,68 @@
 import Foundation
 
 
-// Creation of the class "Mage"
-class Mage: Character {
-    
-    static var possibleWeapon: [Weapon] = [MagicianStaff(), MagisteriumStaff(), WizardStaff()]
+// Creation of the class "BloodMage""
+class BloodMage: Character {
+
+    static var possibleWeapon: [Weapon] = [BlackMageStaff(), NecromancerStaff(), DemonicStaff()]
     static func randomWeapon() -> Weapon {
         let weaponIndex = Int(arc4random_uniform(UInt32(possibleWeapon.count)))
         return possibleWeapon[weaponIndex]
     }
+
     
-    // Modification of function specialWeapon to adapt for the mage (weapon for mag are unique)
+    // Modification of function specialWeapon to adapt for the blood mage (weapon for blood mage are unique)
     override func specialWeapon() {
         let treasureChest = drawForSpecialWeapon()
         if treasureChest == true {
             print(""
             + "\nCongratulations you win a new weapon!"
             + "\nYour \(weapon.name) with damages \(weapon.possibleAttack[0]) - \(weapon.possibleAttack.last!) is replaced by :")
-            weapon = Mage.randomWeapon()
+            weapon = BloodMage.randomWeapon()
             print("\(weapon.name) with damages \(weapon.possibleAttack[0]) - \(weapon.possibleAttack.last!)")
         }
     }
     
-    // Modification of function resetproperties to adapt for the mage
+    // Modification of function resetProperties to adapt for the blood mage
     override func resetProperties() {
         damageGiven = 0
         damageReceveid = 0
         health = 250
         powerUsed = false
-        weapon = Staff()
+        weapon = BloodStaff()
     }
     
-    // Modification of function specialPower to adapt for the mage (heal all his partners)
+    // Modification of function specialPower to adapt for the blood mage (hit all the opponent)
     override func specialPower(characterTeam: Team, otherTeam: Team) -> Bool {
         print(""
-        + "\nSpecial power: heal all the team"
+        + "\nSpecial power: poisons all the opponent's team"
         + "\n")
-        for character in characterTeam.teamPlayer {
+        for character in otherTeam.teamPlayer {
             if character.health > 0 {
-                character.health += 45
+                character.health -= 45
+                character.damageReceveid += 45
+                damageGiven += 45
             }
         }
         powerUsed = true
-        
-        print("Heal = 45 for each team member")
+
+        print("Damages = 45 for each team member")
         print("Health:")
-        for character in characterTeam.teamPlayer {
+        for character in otherTeam.teamPlayer {
             if character.health > 0 {
                 print("\(character.name)  health:\(character.health)")
+            } else {
+                print("\(character.name) is dead")
+                
             }
         }
         return false
     }
     
-    // Variable configured for mage
+    // Variable configured for blood mage
     init() {
-        super.init(health: 250, heal: 50, classCharacter: "Mage")
-        self.weapon = Staff()
+        super.init(health: 250, heal: 50, classCharacter: "Blood mage")
+        self.weapon = BloodStaff()
     }
 }
+
